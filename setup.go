@@ -80,13 +80,17 @@ func (e *Executor) setCurrentDir() error {
 
 func (e *Executor) readTaskfile() error {
 	var err error
-	e.Taskfile, err = read.Taskfile(&read.ReaderNode{
-		Dir:        e.Dir,
-		Entrypoint: e.Entrypoint,
-		Parent:     nil,
-		Optional:   false,
-	})
-	return err
+	if e.Taskfile == nil {
+		e.Taskfile, err = read.Taskfile(&read.ReaderNode{
+			Dir:        e.Dir,
+			Entrypoint: e.Entrypoint,
+			Parent:     nil,
+			Optional:   false,
+		})
+		return err
+	}
+
+	return nil
 }
 
 func (e *Executor) setupFuzzyModel() {
