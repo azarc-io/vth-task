@@ -19,7 +19,7 @@ func (e *Executor) areTaskPreconditionsMet(ctx context.Context, t *taskfile.Task
 		err := execext.RunCommand(ctx, &execext.RunCommandOptions{
 			Command: p.Sh,
 			Dir:     t.Dir,
-			Env:     getEnviron(t),
+			Env:     getEnviron(t, e.ForceEnvVars),
 		})
 
 		if err != nil {

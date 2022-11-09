@@ -8,12 +8,14 @@ type Cmd struct {
 	Vars        *Vars
 	IgnoreError bool
 	Defer       bool
+	Options     map[string]interface{}
 }
 
 // Dep is a task dependency
 type Dep struct {
-	Task string
-	Vars *Vars
+	Task    string
+	Vars    *Vars
+	Options map[string]interface{}
 }
 
 // UnmarshalYAML implements yaml.Unmarshaler interface
@@ -52,14 +54,16 @@ func (c *Cmd) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		return nil
 	}
 	var taskCall struct {
-		Task string
-		Vars *Vars
+		Task    string
+		Vars    *Vars
+		Options map[string]interface{}
 	}
 	if err := unmarshal(&taskCall); err != nil {
 		return err
 	}
 	c.Task = taskCall.Task
 	c.Vars = taskCall.Vars
+	c.Options = taskCall.Options
 	return nil
 }
 
@@ -71,13 +75,15 @@ func (d *Dep) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		return nil
 	}
 	var taskCall struct {
-		Task string
-		Vars *Vars
+		Task    string
+		Vars    *Vars
+		Options map[string]interface{}
 	}
 	if err := unmarshal(&taskCall); err != nil {
 		return err
 	}
 	d.Task = taskCall.Task
 	d.Vars = taskCall.Vars
+	d.Options = taskCall.Options
 	return nil
 }

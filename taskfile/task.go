@@ -29,6 +29,7 @@ type Task struct {
 	IncludeVars          *Vars
 	IncludedTaskfileVars *Vars
 	IncludedTaskfile     *IncludedTaskfile
+	Options              map[string]interface{}
 }
 
 func (t *Task) Name() string {
@@ -72,6 +73,7 @@ func (t *Task) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		Prefix        string
 		IgnoreError   bool `yaml:"ignore_error"`
 		Run           string
+		Options       map[string]interface{}
 	}
 	if err := unmarshal(&task); err != nil {
 		return err
@@ -96,6 +98,7 @@ func (t *Task) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	t.Prefix = task.Prefix
 	t.IgnoreError = task.IgnoreError
 	t.Run = task.Run
+	t.Options = task.Options
 	return nil
 }
 
@@ -127,6 +130,7 @@ func (t *Task) DeepCopy() *Task {
 		IncludeVars:          t.IncludeVars.DeepCopy(),
 		IncludedTaskfileVars: t.IncludedTaskfileVars.DeepCopy(),
 		IncludedTaskfile:     t.IncludedTaskfile.DeepCopy(),
+		Options:              t.Options,
 	}
 	return c
 }

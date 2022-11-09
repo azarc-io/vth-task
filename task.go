@@ -33,19 +33,20 @@ const (
 type Executor struct {
 	Taskfile *taskfile.Taskfile
 
-	Dir         string
-	TempDir     string
-	Entrypoint  string
-	Force       bool
-	Watch       bool
-	Verbose     bool
-	Silent      bool
-	Dry         bool
-	Summary     bool
-	Parallel    bool
-	Color       bool
-	Concurrency int
-	Interval    string
+	Dir          string
+	TempDir      string
+	Entrypoint   string
+	Force        bool
+	Watch        bool
+	Verbose      bool
+	Silent       bool
+	Dry          bool
+	Summary      bool
+	Parallel     bool
+	Color        bool
+	Concurrency  int
+	Interval     string
+	ForceEnvVars bool
 
 	Stdin  io.Reader
 	Stdout io.Writer
@@ -270,7 +271,7 @@ func (e *Executor) runCommand(ctx context.Context, t *taskfile.Task, call taskfi
 		err = execext.RunCommand(ctx, &execext.RunCommandOptions{
 			Command: cmd.Cmd,
 			Dir:     t.Dir,
-			Env:     getEnviron(t),
+			Env:     getEnviron(t, e.ForceEnvVars),
 			Stdin:   e.Stdin,
 			Stdout:  stdOut,
 			Stderr:  stdErr,
@@ -285,7 +286,7 @@ func (e *Executor) runCommand(ctx context.Context, t *taskfile.Task, call taskfi
 	}
 }
 
-func getEnviron(t *taskfile.Task) []string {
+func getEnviron(t *taskfile.Task, force bool) []string {
 	if t.Env == nil {
 		return nil
 	}
@@ -299,6 +300,12 @@ func getEnviron(t *taskfile.Task) []string {
 		}
 
 		if _, alreadySet := os.LookupEnv(k); alreadySet {
+			if force {
+				idx := slices.Index(environ, fmt.Sprintf("%s=%s", k, os.Getenv(k)))
+				environ[idx] = fmt.Sprintf("%s=%s", k, str)
+				continue
+			}
+
 			continue
 		}
 

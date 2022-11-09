@@ -109,7 +109,7 @@ func (e *Executor) isTaskUpToDateStatus(ctx context.Context, t *taskfile.Task) (
 		err := execext.RunCommand(ctx, &execext.RunCommandOptions{
 			Command: s,
 			Dir:     t.Dir,
-			Env:     getEnviron(t),
+			Env:     getEnviron(t, e.ForceEnvVars),
 		})
 		if err != nil {
 			e.Logger.VerboseOutf(logger.Yellow, "task: status command %s exited non-zero: %s", s, err)

@@ -57,7 +57,7 @@ func (e *Executor) ListTaskNames(allTasks bool) {
 	s := make([]string, 0, len(e.Taskfile.Tasks))
 	for _, t := range e.Taskfile.Tasks {
 		if (allTasks || t.Desc != "") && !t.Internal {
-			s = append(s, strings.TrimRight(t.Task, ":"))
+			s = append(s, fmt.Sprintf("%s: %s", t.Task, t.Desc))
 		}
 	}
 	// sort and print all task names
